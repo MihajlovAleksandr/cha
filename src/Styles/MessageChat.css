@@ -27,7 +27,7 @@
   }
 
   .other-message {
-    background-color: #ffffff;
+    background-color: #f2f2f7;
     color: #000;
     margin-right: auto;
     text-align: left;
@@ -41,7 +41,7 @@
     top: 0;
     border-width: 0 25px 38px 0; 
     border-style: solid;
-    border-color: transparent #ffffff transparent transparent;
+    border-color: transparent #f2f2f7 transparent transparent;
   }
   
 

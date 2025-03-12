@@ -2,6 +2,7 @@
 import './Styles/App.css';
 import { Header } from './Header';
 import MessageChat from './MessageChat';
+import TextInputArea from './TextInputArea'
 
 const currentUserId = "Alice";
 
@@ -36,6 +37,7 @@ function App() {
           </div>
         ))}
       </div>
+      <TextInputArea></TextInputArea>
     </div>
   );
 }

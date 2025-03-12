@@ -1,0 +1,89 @@
+.chat-message {
+    display: inline-block;
+    max-width: 70%;
+    margin-bottom: 15px;
+    position: relative;
+    word-break: break-word;
+    font-family: sans-serif;
+    border-radius: 16px;
+  }
+  
+  .user-message {
+    background-color: #007aff;
+    color: #fff;
+    margin-left: auto;
+    text-align: left;
+    padding: 10px 24px 10px 14px;
+    position: relative;
+  }
+.user-message::after {
+    content: "";
+    position: absolute;
+    right: -10px; 
+    top: 0;
+    border-width: 38px 25px 0 0; 
+    border-style: solid;
+    border-color: #007aff transparent transparent transparent;
+  }
+
+  .other-message {
+    background-color: #ffffff;
+    color: #000;
+    margin-right: auto;
+    text-align: left;
+    padding: 10px 14px 10px 24px;
+    position: relative;
+  }
+  .other-message::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 0;
+    border-width: 0 25px 38px 0; 
+    border-style: solid;
+    border-color: transparent #ffffff transparent transparent;
+  }
+  
+
+  .chat-body {
+    display: flex;
+    flex-direction: column;
+  }
+  
+
+  .chat-info {
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: #333;
+  }
+  
+  .chat-user {
+    font-weight: bold;
+  }
+  
+  .chat-role {
+    margin-left: 5px;
+    font-style: italic;
+    color: #777;
+  }
+  
+
+  .chat-text {
+    font-size: 1em;
+    margin-bottom: 5px;
+    line-height: 1.4;
+  }
+  
+
+  .chat-time {
+    font-size: 0.75em;
+    align-self: flex-end;
+  }
+  
+  .user-message .chat-time {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .other-message .chat-time {
+    color: #999;
+  }

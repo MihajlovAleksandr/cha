@@ -11,10 +11,16 @@ export default function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
     if (username.trim() && password.trim()) {
-      localStorage.setItem('userId', username);
-      navigate('/');
+    
+            fetch('http://localhost:3001/api/user')
+                .then(response => response.json())
+                .then(data => LoginIn(data))
+                .catch(error => console.error('Ошибка:', error));
     }
   };
+    function LoginIn(user){
+    localStorage.setItem("userId", user.Id);
+    }
 
   return (
     <div className="app-wrapper">
@@ -40,4 +46,5 @@ export default function Login() {
     </div>
     </div>
   );
+  
 }

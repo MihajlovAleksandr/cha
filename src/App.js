@@ -2,66 +2,73 @@ import './Styles/App.css';
 import { Header } from './Header';
 import MessageChat from './MessageChat';
 import TextInputArea from './TextInputArea';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const currentUserId = localStorage.getItem("userId");
-
+const currentUserId = localStorage.getItem("userId"); // Получаем userId
+console.log(currentUserId);
 
 function App() {
-  const initialMessages = [
-    { id: '1', user: 'Unknown', time: '11:31 AM', message: 'Hi team 👋' },
-    { id: '2', user: 'Unknown', time: '11:31 AM', message: 'Anyone on for lunch today' },
-    { id: '3', user: 'Jav', time: '11:35 AM', message: "I'm down! Any ideas??", role: 'Engineering' },
-    { id: '4', user: 'Unknown', time: '11:36 AM', message: 'I am down for whatever!' },
-    { id: '5', user: 'Aubrey', time: '11:45 AM', message: 'I was thinking the cafe downtown', role: 'Product' },
-    { id: '6', user: 'Aubrey', time: '11:46 AM', message: 'But limited vegan options @Janet!', role: 'Product' },
-    { id: '7', user: 'Unknown', time: '11:52 PM', message: 'Agreed' },
-    { id: '8', user: 'Alice', time: '12:00 PM', message: 'Let’s meet at the common area.' }
-  ];
+    const [messages, setMessages] = useState([]);
+    const [inputText, setInputText] = useState('');
 
-  const [messages, setMessages] = useState(initialMessages);
-  const [inputText, setInputText] = useState('');
+    // Загружаем сообщения из API при монтировании
+    useEffect(() => {
+        fetch('http://localhost:3001/api/getMessages')
+            .then(response => response.json())
+            .then(data => setMessages(data))
+            .catch(error => console.error('Ошибка:', error));
+    }, []);
 
-  const handleSendMessage = () => {
-    if (inputText.trim() === '') return;
-    
-    const newMessage = {
-      id: Date.now().toString(),
-      user: currentUserId,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      message: inputText
+    const handleSendMessage = async () => {
+        if (inputText.trim() === '') return;
+
+        const newMessage = {
+            text: inputText,
+            time: new Date().toString(),
+            userId: currentUserId
+        };
+
+        console.log(newMessage.time);
+
+        // Отправка сообщения на сервер
+        try {
+            const response = await fetch('http://localhost:3001/api/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newMessage),
+            });
+
+            if (!response.ok) throw new Error('Ошибка отправки сообщения');
+
+            setMessages([...messages, newMessage]);
+            setInputText('');
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
     };
-    
-    setMessages([...messages, newMessage]);
-    setInputText('');
-  };
 
-  return (
-    <div className="app-wrapper">
-      <Header />
-      <div className="chat-container">
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`message-wrapper ${msg.user === currentUserId ? 'user' : 'other'}`}
-          >
-            <MessageChat
-              user={msg.user}
-              time={msg.time}
-              message={msg.message}
-              role={msg.role}
-              isUserMessage={msg.user === currentUserId}
+    return (
+        <div className="app-wrapper">
+            <Header />
+            <div className="chat-container">
+                {messages.map((msg, index) => (
+                    <div key={index} className={`message-wrapper ${msg.userId == currentUserId ? 'user' : 'other'}`}>
+                        <MessageChat 
+                            user={msg.username} 
+                            time={new Date(msg.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} 
+                            message={msg.text} 
+                            isUserMessage={msg.userId == currentUserId} 
+                        />
+                    </div>
+                ))}
+            </div>
+            <TextInputArea 
+                inputText={inputText} 
+                setInputText={setInputText} 
+                handleSendMessage={handleSendMessage} 
             />
-          </div>
-        ))}
-      </div>
-      <TextInputArea 
-        inputText={inputText}
-        setInputText={setInputText}
-        handleSendMessage={handleSendMessage}
-      />
-    </div>
-  );
+        </div>
+    );
 }
 
 export default App;

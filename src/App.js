@@ -1,13 +1,14 @@
-
 import './Styles/App.css';
 import { Header } from './Header';
 import MessageChat from './MessageChat';
-import TextInputArea from './TextInputArea'
+import TextInputArea from './TextInputArea';
+import { useState } from 'react';
 
-const currentUserId = "Alice";
+const currentUserId = localStorage.getItem("userId");
+
 
 function App() {
-  const messages = [
+  const initialMessages = [
     { id: '1', user: 'Unknown', time: '11:31 AM', message: 'Hi team 👋' },
     { id: '2', user: 'Unknown', time: '11:31 AM', message: 'Anyone on for lunch today' },
     { id: '3', user: 'Jav', time: '11:35 AM', message: "I'm down! Any ideas??", role: 'Engineering' },
@@ -15,8 +16,25 @@ function App() {
     { id: '5', user: 'Aubrey', time: '11:45 AM', message: 'I was thinking the cafe downtown', role: 'Product' },
     { id: '6', user: 'Aubrey', time: '11:46 AM', message: 'But limited vegan options @Janet!', role: 'Product' },
     { id: '7', user: 'Unknown', time: '11:52 PM', message: 'Agreed' },
-    { id: '8', user: 'Alice', time: '12:00 PM', message: 'Let’s meet at the common area.' },
+    { id: '8', user: 'Alice', time: '12:00 PM', message: 'Let’s meet at the common area.' }
   ];
+
+  const [messages, setMessages] = useState(initialMessages);
+  const [inputText, setInputText] = useState('');
+
+  const handleSendMessage = () => {
+    if (inputText.trim() === '') return;
+    
+    const newMessage = {
+      id: Date.now().toString(),
+      user: currentUserId,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      message: inputText
+    };
+    
+    setMessages([...messages, newMessage]);
+    setInputText('');
+  };
 
   return (
     <div className="app-wrapper">
@@ -37,7 +55,11 @@ function App() {
           </div>
         ))}
       </div>
-      <TextInputArea></TextInputArea>
+      <TextInputArea 
+        inputText={inputText}
+        setInputText={setInputText}
+        handleSendMessage={handleSendMessage}
+      />
     </div>
   );
 }

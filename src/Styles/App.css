@@ -1,0 +1,30 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+
+.app-wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-container {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.message-wrapper {
+  display: flex;
+  margin-bottom: 10px;
+}
+.message-wrapper.user {
+  justify-content: flex-end;
+}
+.message-wrapper.other {
+  justify-content: flex-start;
+}

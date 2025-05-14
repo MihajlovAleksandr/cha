@@ -15,12 +15,14 @@ exports.handleUserAuth = (req, res) => {
         const user = results[0];
 
         console.log(`${user.Password} ${password}`)
+        
         if (user.Password === password) {
           // Пароль совпадает - вход выполнен
-          res.status(200).json({ message: 'Вход выполнен', userId: user.Id });
+          res.status(200).json({ message: 'LoginIn', userId: user.Id });
         } else {
           // Пароль не совпадает
-          res.status(401).json({ message: 'Неверный пароль' });
+          console.log("uncorrectPassword");
+          res.status(401).json({ message: 'UncorrectPassword' });
         }
       } else {
         // Пользователя нет - создаем нового и выполняем вход
@@ -30,7 +32,7 @@ exports.handleUserAuth = (req, res) => {
           (err, insertResults) => {
             if (err) return res.status(500).json({ error: err.message });
             res.status(201).json({ 
-              message: 'Пользователь создан и вход выполнен', 
+              message: 'Registration', 
               userId: insertResults.insertId 
             });
           }
@@ -53,3 +55,27 @@ exports.getUser = (req, res) => {
   );
 };
 
+exports.updateUserRole = (req, res) => {
+  const { role, id } = req.body;
+  if (!role || !id) {
+    return res.status(400).json({ error: 'Роль и ID пользователя обязательны' });
+  }
+
+  console.log(`Updating user ${id} with role ${role}`);
+
+  db.query(
+    'UPDATE Users SET Role = ? WHERE Id = ?',
+    [role, id],
+    (err, results) => {
+      if (err) {
+        console.error('Ошибка базы данных:', err);
+        return res.status(500).json({ error: 'Ошибка сервера' });
+      }
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ error: 'Пользователь не найден' });
+      }
+
+      res.status(200).json({ status: true, message: 'Роль успешно обновлена' });
+    }
+  );
+};

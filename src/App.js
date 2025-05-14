@@ -4,15 +4,17 @@ import { MessageChat } from './MessageChat';
 import TextInputArea from './TextInputArea';
 import { useState, useEffect } from 'react';
 
-const currentUserId = localStorage.getItem("userId");
-
 function App() {
     const [messages, setMessages] = useState([]);
     const [inputText, setInputText] = useState('');
-
-    // Загружаем сообщения из API при монтировании
+    
     useEffect(() => {
-        fetchMessages();
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+            window.location.href = "/login"; 
+        } else {
+            fetchMessages();
+        }
     }, []);
 
     const fetchMessages = () => {
@@ -23,12 +25,13 @@ function App() {
     };
 
     const handleSendMessage = async () => {
-        if (inputText.trim() === '') return;
+        const userId = localStorage.getItem("userId");
+        if (inputText.trim() === '' || !userId) return;
 
         const newMessage = {
             text: inputText,
             time: new Date().toString(),
-            userId: currentUserId
+            userId
         };
 
         try {
@@ -40,7 +43,7 @@ function App() {
 
             if (!response.ok) throw new Error('Ошибка отправки сообщения');
 
-            fetchMessages(); // Refresh messages after sending
+            fetchMessages(); 
             setInputText('');
         } catch (error) {
             console.error('Ошибка:', error);
@@ -57,7 +60,7 @@ function App() {
 
             if (!response.ok) throw new Error('Ошибка обновления сообщения');
 
-            fetchMessages(); // Refresh messages after editing
+            fetchMessages();
         } catch (error) {
             console.error('Ошибка:', error);
         }
@@ -71,7 +74,7 @@ function App() {
 
             if (!response.ok) throw new Error('Ошибка удаления сообщения');
 
-            fetchMessages(); // Refresh messages after deletion
+            fetchMessages();
         } catch (error) {
             console.error('Ошибка:', error);
         }
@@ -82,13 +85,13 @@ function App() {
             <Header />
             <div className="chat-container">
                 {messages.map((msg) => (
-                    <div key={msg.Id} className={`message-wrapper ${msg.userId == currentUserId ? 'user' : 'other'}`}>
+                    <div key={msg.Id} className={`message-wrapper ${msg.userId === localStorage.getItem("userId") ? 'user' : 'other'}`}>
                         <MessageChat 
                             user={msg.username} 
-                            role = {msg.role}
+                            role={msg.role}
                             time={new Date(msg.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} 
                             message={msg.text} 
-                            isUserMessage={msg.userId == currentUserId} 
+                            isUserMessage={msg.userId == localStorage.getItem("userId")} 
                             onEdit={(newText) => handleEditMessage(msg.Id, newText)}
                             onDelete={() => handleDeleteMessage(msg.Id)}
                         />

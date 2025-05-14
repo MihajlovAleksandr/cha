@@ -10,17 +10,29 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (username.trim() && password.trim()) {
-    
-            fetch(`http://localhost:3001/api/user/${username.trim()}/${password.trim()}`)
-                .then(response => response.json())
-                .then(data => LoginIn(data))
-                .catch(error => console.error('Ошибка:', error));
-    }
+     fetch('http://localhost:3001/api/user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    })
+    .then(response => response.json())
+    .then(data => LoginIn(data))
+    .catch(error => console.error('Ошибка:', error));
   };
     function LoginIn(data){
       console.log(data)
-      localStorage.setItem("userId", data.userId);
+      if(data.message==="LoginIn"  || data.message === "Registration" )
+      {
+        localStorage.setItem("userId", data.userId);
+        if(data.message === "Registration"){
+          window.location.href = "/role";
+        }
+        else{
+          window.location.href = "/";
+        }
+      }
     }
 
   return (

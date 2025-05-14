@@ -24,13 +24,25 @@ function App() {
             .catch(error => console.error('Ошибка:', error));
     };
 
+const formatDate = (dateString) => {
+    const options = { month: 'numeric', day: '2-digit', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+};
+
+    const shouldDisplayDate = (currentMessage, previousMessage) => {
+        if (!previousMessage) return true;
+        const currentDate = new Date(currentMessage.time).toDateString();
+        const previousDate = new Date(previousMessage.time).toDateString();
+        return currentDate !== previousDate;
+    };
+
     const handleSendMessage = async () => {
         const userId = localStorage.getItem("userId");
         if (inputText.trim() === '' || !userId) return;
 
         const newMessage = {
             text: inputText,
-            time: new Date().toString(),
+            time: new Date().toISOString(),
             userId
         };
 
@@ -84,17 +96,24 @@ function App() {
         <div className="app-wrapper">
             <Header />
             <div className="chat-container">
-                {messages.map((msg) => (
-                    <div key={msg.Id} className={`message-wrapper ${msg.userId === localStorage.getItem("userId") ? 'user' : 'other'}`}>
-                        <MessageChat 
-                            user={msg.username} 
-                            role={msg.role}
-                            time={new Date(msg.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} 
-                            message={msg.text} 
-                            isUserMessage={msg.userId == localStorage.getItem("userId")} 
-                            onEdit={(newText) => handleEditMessage(msg.Id, newText)}
-                            onDelete={() => handleDeleteMessage(msg.Id)}
-                        />
+                {messages.map((msg, index) => (
+                    <div key={msg.Id}>
+                        {shouldDisplayDate(msg, messages[index - 1]) && (
+                            <div className="date-separator">
+                                {formatDate(msg.time)}
+                            </div>
+                        )}
+                        <div className={`message-wrapper ${msg.userId === localStorage.getItem("userId") ? 'user' : 'other'}`}>
+                            <MessageChat 
+                                user={msg.username} 
+                                role={msg.role}
+                                time={new Date(msg.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} 
+                                message={msg.text} 
+                                isUserMessage={msg.userId == localStorage.getItem("userId")} 
+                                onEdit={(newText) => handleEditMessage(msg.Id, newText)}
+                                onDelete={() => handleDeleteMessage(msg.Id)}
+                            />
+                        </div>
                     </div>
                 ))}
             </div>

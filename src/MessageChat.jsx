@@ -6,6 +6,12 @@ export const MessageChat = ({ user, role, time, message, isUserMessage, onEdit, 
   const [editedMessage, setEditedMessage] = useState(message);
   const [showActions, setShowActions] = useState(false);
 
+  // Функция для форматирования времени в AM/PM
+  const formatTime = (time) => {
+    const date = new Date(`1970-01-01T${time}`);
+    return date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+  };
+
   const handleEditSubmit = () => {
     onEdit(editedMessage);
     setIsEditing(false);
@@ -17,10 +23,13 @@ export const MessageChat = ({ user, role, time, message, isUserMessage, onEdit, 
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
-      <div className="chat-info">
-        <span className="chat-user">{user}</span>
-        {!isUserMessage && <span className="chat-role">{role}</span>}
-      </div>
+      {/* Only show user info if it's not the user's message */}
+      {!isUserMessage && (
+        <div className="chat-info">
+          <span className="chat-user">{user}</span>
+          <span className="chat-role">{role}</span>
+        </div>
+      )}
       
       {isEditing ? (
         <div className="message-edit-container">
@@ -40,7 +49,7 @@ export const MessageChat = ({ user, role, time, message, isUserMessage, onEdit, 
         <div className="chat-text">{message}</div>
       )}
       
-      <div className="chat-time">{time}</div>
+      <div className="chat-time">{formatTime(time)}</div>
       
       {isUserMessage && showActions && !isEditing && (
         <div className="message-actions">

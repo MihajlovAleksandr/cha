@@ -87,3 +87,10 @@
   .other-message .chat-time {
     color: #999;
   }
+.chat-role {
+  margin-left: 5px;
+  font-style: italic;
+  color: #777;
+}
+
+  

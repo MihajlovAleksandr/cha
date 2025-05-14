@@ -12,14 +12,15 @@ export default function Login() {
     e.preventDefault();
     if (username.trim() && password.trim()) {
     
-            fetch('http://localhost:3001/api/user')
+            fetch(`http://localhost:3001/api/user/${username.trim()}/${password.trim()}`)
                 .then(response => response.json())
                 .then(data => LoginIn(data))
                 .catch(error => console.error('Ошибка:', error));
     }
   };
-    function LoginIn(user){
-    localStorage.setItem("userId", user.Id);
+    function LoginIn(data){
+      console.log(data)
+      localStorage.setItem("userId", data.userId);
     }
 
   return (

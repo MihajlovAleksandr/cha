@@ -3,10 +3,10 @@ const router = express.Router();
 const userController = require('./userController');
 const messageController = require('./messageController');
 
-router.post('/users', userController.createUser);
-router.get('/user/:username/:password', userController.getUser);
-router.post('/messages', messageController.createMessage);
+router.get('/user/', userController.handleUserAuth);
+router.post('/createMessage', messageController.createMessage);
 router.get('/getMessages', messageController.getMessages);
-router.get('/messages/:userId', messageController.getMessagesByUser);
+router.put('/updateMessage/:messageId', messageController.updateMessage);
+router.delete('/deleteMessage/:messageId', messageController.deleteMessage);
 
 module.exports = router;

@@ -28,3 +28,10 @@ html, body {
 .message-wrapper.other {
   justify-content: flex-start;
 }
+.date-separator {
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+    margin: 10px 0;
+}
+
